@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriTrack | Healthy Food Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        .food-card:hover {
+            transform: translateY(-4px);
+            transition: all 0.3s ease;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <div class="bg-emerald-500 p-2 rounded-lg">
+                        <i class="fas fa-leaf text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-emerald-600">NutriTrack</span>
+                </div>
+                <div class="hidden md:flex space-x-8 font-medium text-slate-600">
+                    <a href="#directory" class="hover:text-emerald-500 transition">Food Directory</a>
+                    <a href="#calculator" class="hover:text-emerald-500 transition">Calculator</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="p-2"><i class="fas fa-bars"></i></button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative py-16 bg-emerald-600 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center md:text-left md:flex items-center justify-between">
+                <div class="md:w-1/2">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
+                        Fuel Your Body with <br><span class="text-emerald-200">The Right Nutrition</span>
+                    </h1>
+                    <p class="text-emerald-50 text-lg mb-8 max-w-lg">
+                        Explore our comprehensive guide of nutrient-dense foods and track your daily intake with our precision calorie calculator.
+                    </p>
+                    <a href="#directory" class="bg-white text-emerald-600 px-8 py-3 rounded-full font-bold shadow-lg hover:bg-emerald-50 transition inline-block">
+                        Explore Foods
+                    </a>
+                </div>
+                <div class="hidden md:block md:w-1/2 mt-12 md:mt-0">
+                    <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-sm border border-white/20">
+                        <div class="grid grid-cols-2 gap-4 text-white">
+                            <div class="text-center p-4 bg-white/10 rounded-xl">
+                                <div class="text-3xl font-bold">50+</div>
+                                <div class="text-xs uppercase tracking-wider">Superfoods</div>
+                            </div>
+                            <div class="text-center p-4 bg-white/10 rounded-xl">
+                                <div class="text-3xl font-bold">100%</div>
+                                <div class="text-xs uppercase tracking-wider">Natural</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-emerald-500 rounded-full blur-3xl opacity-50"></div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Food Directory -->
+        <section id="directory" class="mb-20">
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800">Healthy Food Directory</h2>
+                    <p class="text-slate-500">Nutritional value per 100g serving</p>
+                </div>
+                <div class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar" id="category-filters">
+                    <button onclick="filterFoods('all')" class="category-btn active bg-emerald-600 text-white px-4 py-2 rounded-full whitespace-nowrap shadow-sm">All</button>
+                    <button onclick="filterFoods('Fruit')" class="category-btn bg-white border border-slate-200 px-4 py-2 rounded-full whitespace-nowrap hover:border-emerald-500 transition">Fruits</button>
+                    <button onclick="filterFoods('Vegetable')" class="category-btn bg-white border border-slate-200 px-4 py-2 rounded-full whitespace-nowrap hover:border-emerald-500 transition">Vegetables</button>
+                    <button onclick="filterFoods('Protein')" class="category-btn bg-white border border-slate-200 px-4 py-2 rounded-full whitespace-nowrap hover:border-emerald-500 transition">Protein</button>
+                    <button onclick="filterFoods('Grain')" class="category-btn bg-white border border-slate-200 px-4 py-2 rounded-full whitespace-nowrap hover:border-emerald-500 transition">Grains</button>
+                </div>
+            </div>
+
+            <div id="food-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Food items injected by JS -->
+            </div>
+        </section>
+
+        <!-- Calorie Calculator Section -->
+        <section id="calculator" class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+            <div class="grid grid-cols-1 lg:grid-cols-3">
+                
+                <!-- Input Panel -->
+                <div class="p-8 lg:border-r border-slate-100">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                        <i class="fas fa-calculator text-emerald-500"></i>
+                        Daily Planner
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Select Food</label>
+                            <select id="calc-food-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <!-- Options injected by JS -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Portion Size (grams)</label>
+                            <input type="number" id="calc-amount" value="100" min="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                        <button onclick="addToLog()" class="w-full bg-emerald-600 text-white font-bold py-4 rounded-xl hover:bg-emerald-700 transition shadow-md">
+                            Add to Meal Log
+                        </button>
+                    </div>
+
+                    <div class="mt-8 p-6 bg-emerald-50 rounded-2xl border border-emerald-100">
+                        <h4 class="font-bold text-emerald-800 mb-2">Pro Tip</h4>
+                        <p class="text-sm text-emerald-700">Most healthy adults need 2,000–2,500 calories per day to maintain weight. Focus on fiber-rich grains and lean proteins.</p>
+                    </div>
+                </div>
+
+                <!-- Log Panel -->
+                <div class="p-8 lg:col-span-2 bg-slate-50/50">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-bold">Meal Log</h3>
+                        <button onclick="clearLog()" class="text-slate-400 hover:text-red-500 text-sm font-medium transition">
+                            <i class="fas fa-trash-alt mr-1"></i> Clear All
+                        </button>
+                    </div>
+
+                    <div id="log-container" class="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Log items injected by JS -->
+                        <div class="text-center py-10 text-slate-400" id="empty-log-msg">
+                            <i class="fas fa-utensils text-4xl mb-3 block opacity-20"></i>
+                            Your meal log is empty. Start adding foods!
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="mt-8 pt-6 border-t border-slate-200">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <div class="p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                                <div class="text-xs text-slate-500 uppercase font-bold tracking-wider">Total Calories</div>
+                                <div id="total-calories" class="text-2xl font-bold text-emerald-600">0</div>
+                            </div>
+                            <div class="p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                                <div class="text-xs text-slate-500 uppercase font-bold tracking-wider">Protein (g)</div>
+                                <div id="total-protein" class="text-2xl font-bold text-blue-600">0</div>
+                            </div>
+                            <div class="p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                                <div class="text-xs text-slate-500 uppercase font-bold tracking-wider">Carbs (g)</div>
+                                <div id="total-carbs" class="text-2xl font-bold text-orange-600">0</div>
+                            </div>
+                            <div class="p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                                <div class="text-xs text-slate-500 uppercase font-bold tracking-wider">Fat (g)</div>
+                                <div id="total-fat" class="text-2xl font-bold text-amber-600">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 text-white py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center gap-2 mb-6">
+                <i class="fas fa-leaf text-emerald-400 text-2xl"></i>
+                <span class="text-2xl font-bold">NutriTrack</span>
+            </div>
+            <p class="text-slate-400 max-w-md mx-auto mb-8">
+                Your companion for a healthier lifestyle. Track, analyze, and optimize your nutrition every day.
+            </p>
+            <div class="flex justify-center gap-6 mb-8 text-2xl">
+                <a href="#" class="text-slate-500 hover:text-emerald-400"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-slate-500 hover:text-emerald-400"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-slate-500 hover:text-emerald-400"><i class="fab fa-facebook"></i></a>
+            </div>
+            <div class="text-sm text-slate-500 border-t border-slate-800 pt-8">
+                &copy; 2024 NutriTrack Nutrition Guide. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Notification Container -->
+    <div id="notification-area" class="fixed bottom-4 right-4 z-[100] flex flex-col gap-2"></div>
+
+    <script>
+        // Database of healthy foods (Values per 100g)
+        const foods = [
+            { id: 1, name: "Avocado", category: "Fruit", calories: 160, protein: 2, carbs: 9, fat: 15, icon: "🥑" },
+            { id: 2, name: "Chicken Breast", category: "Protein", calories: 165, protein: 31, carbs: 0, fat: 3.6, icon: "🍗" },
+            { id: 3, name: "Quinoa", category: "Grain", calories: 120, protein: 4.4, carbs: 21, fat: 1.9, icon: "🍚" },
+            { id: 4, name: "Broccoli", category: "Vegetable", calories: 34, protein: 2.8, carbs: 7, fat: 0.4, icon: "🥦" },
+            { id: 5, name: "Salmon", category: "Protein", calories: 208, protein: 20, carbs: 0, fat: 13, icon: "🐟" },
+            { id: 6, name: "Sweet Potato", category: "Vegetable", calories: 86, protein: 1.6, carbs: 20, fat: 0.1, icon: "🍠" },
+            { id: 7, name: "Greek Yogurt", category: "Protein", calories: 59, protein: 10, carbs: 3.6, fat: 0.4, icon: "🥛" },
+            { id: 8, name: "Almonds", category: "Protein", calories: 579, protein: 21, carbs: 22, fat: 50, icon: "🥜" },
+            { id: 9, name: "Blueberries", category: "Fruit", calories: 57, protein: 0.7, carbs: 14, fat: 0.3, icon: "🫐" },
+            { id: 10, name: "Spinach", category: "Vegetable", calories: 23, protein: 2.9, carbs: 3.6, fat: 0.4, icon: "🥬" },
+            { id: 11, name: "Brown Rice", category: "Grain", calories: 111, protein: 2.6, carbs: 23, fat: 0.9, icon: "🌾" },
+            { id: 12, name: "Eggs", category: "Protein", calories: 155, protein: 13, carbs: 1.1, fat: 11, icon: "🥚" },
+            { id: 13, name: "Apple", category: "Fruit", calories: 52, protein: 0.3, carbs: 14, fat: 0.2, icon: "🍎" },
+            { id: 14, name: "Kale", category: "Vegetable", calories: 49, protein: 4.3, carbs: 9, fat: 0.9, icon: "🥗" },
+            { id: 15, name: "Tofu", category: "Protein", calories: 76, protein: 8, carbs: 1.9, fat: 4.8, icon: "🍱" }
+        ];
+
+        let mealLog = [];
+
+        // UI Initialization
+        window.onload = () => {
+            renderFoodGrid(foods);
+            populateSelect();
+        };
+
+        function renderFoodGrid(items) {
+            const grid = document.getElementById('food-grid');
+            grid.innerHTML = items.map(food => `
+                <div class="food-card glass-card rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col items-center text-center">
+                    <div class="text-5xl mb-4">${food.icon}</div>
+                    <h4 class="text-xl font-bold text-slate-800 mb-1">${food.name}</h4>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full mb-4">
+                        ${food.category}
+                    </span>
+                    <div class="w-full grid grid-cols-2 gap-2 text-sm">
+                        <div class="bg-slate-50 p-2 rounded-lg">
+                            <div class="text-slate-400 text-[10px] uppercase font-bold">Calories</div>
+                            <div class="font-bold">${food.calories}</div>
+                        </div>
+                        <div class="bg-slate-50 p-2 rounded-lg">
+                            <div class="text-slate-400 text-[10px] uppercase font-bold">Protein</div>
+                            <div class="font-bold text-blue-600">${food.protein}g</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterFoods(category) {
+            // Update Buttons UI
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-emerald-600', 'text-white');
+                btn.classList.add('bg-white', 'text-slate-800');
+            });
+            event.target.classList.add('active', 'bg-emerald-600', 'text-white');
+            event.target.classList.remove('bg-white', 'text-slate-800');
+
+            if (category === 'all') {
+                renderFoodGrid(foods);
+            } else {
+                const filtered = foods.filter(f => f.category === category);
+                renderFoodGrid(filtered);
+            }
+        }
+
+        function populateSelect() {
+            const select = document.getElementById('calc-food-select');
+            select.innerHTML = foods.map(f => `<option value="${f.id}">${f.name} (${f.calories} cal/100g)</option>`).join('');
+        }
+
+        function addToLog() {
+            const foodId = parseInt(document.getElementById('calc-food-select').value);
+            const amount = parseFloat(document.getElementById('calc-amount').value);
+            
+            if (!amount || amount <= 0) {
+                showToast("Please enter a valid amount", "error");
+                return;
+            }
+
+            const food = foods.find(f => f.id === foodId);
+            const factor = amount / 100;
+
+            const entry = {
+                uid: Date.now(),
+                name: food.name,
+                icon: food.icon,
+                amount: amount,
+                calories: Math.round(food.calories * factor),
+                protein: (food.protein * factor).toFixed(1),
+                carbs: (food.carbs * factor).toFixed(1),
+                fat: (food.fat * factor).toFixed(1)
+            };
+
+            mealLog.push(entry);
+            renderLog();
+            showToast(`Added ${amount}g of ${food.name}`, "success");
+        }
+
+        function renderLog() {
+            const container = document.getElementById('log-container');
+            const emptyMsg = document.getElementById('empty-log-msg');
+
+            if (mealLog.length === 0) {
+                emptyMsg.style.display = 'block';
+                container.innerHTML = '';
+                updateTotals(0, 0, 0, 0);
+                return;
+            }
+
+            emptyMsg.style.display = 'none';
+            container.innerHTML = mealLog.map(item => `
+                <div class="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-slate-100 group">
+                    <div class="flex items-center gap-4">
+                        <div class="text-2xl w-10 h-10 bg-slate-50 flex items-center justify-center rounded-xl">${item.icon}</div>
+                        <div>
+                            <div class="font-bold text-slate-800">${item.name}</div>
+                            <div class="text-xs text-slate-500">${item.amount}g • ${item.calories} kcal</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="hidden sm:flex gap-3 text-[10px] font-bold uppercase text-slate-400">
+                            <div class="text-center"><span class="block text-blue-500">${item.protein}g</span> PRO</div>
+                            <div class="text-center"><span class="block text-orange-500">${item.carbs}g</span> CHO</div>
+                            <div class="text-center"><span class="block text-amber-500">${item.fat}g</span> FAT</div>
+                        </div>
+                        <button onclick="removeFromLog(${item.uid})" class="text-slate-300 hover:text-red-500 transition p-2">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `).reverse().join('');
+
+            calculateTotals();
+        }
+
+        function removeFromLog(uid) {
+            mealLog = mealLog.filter(i => i.uid !== uid);
+            renderLog();
+        }
+
+        function clearLog() {
+            if (mealLog.length === 0) return;
+            mealLog = [];
+            renderLog();
+            showToast("Log cleared", "info");
+        }
+
+        function calculateTotals() {
+            const totals = mealLog.reduce((acc, curr) => {
+                acc.cal += curr.calories;
+                acc.pro += parseFloat(curr.protein);
+                acc.cho += parseFloat(curr.carbs);
+                acc.fat += parseFloat(curr.fat);
+                return acc;
+            }, { cal: 0, pro: 0, cho: 0, fat: 0 });
+
+            updateTotals(totals.cal, totals.pro.toFixed(1), totals.cho.toFixed(1), totals.fat.toFixed(1));
+        }
+
+        function updateTotals(cal, pro, cho, fat) {
+            document.getElementById('total-calories').innerText = cal;
+            document.getElementById('total-protein').innerText = pro;
+            document.getElementById('total-carbs').innerText = cho;
+            document.getElementById('total-fat').innerText = fat;
+        }
+
+        function showToast(msg, type) {
+            const area = document.getElementById('notification-area');
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'bg-emerald-500',
+                error: 'bg-red-500',
+                info: 'bg-blue-500'
+            };
+            
+            toast.className = `${colors[type]} text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3 animate-bounce-in transform transition-all duration-300`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> <span>${msg}</span>`;
+            
+            area.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
